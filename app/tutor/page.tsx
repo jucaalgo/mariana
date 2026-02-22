@@ -14,7 +14,7 @@ export default function TutorEngine() {
 
     const { t, language } = useLanguage();
 
-    const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
+    const { messages, input, handleInputChange, handleSubmit, isLoading, setInput } = useChat({
         api: "/api/chat",
         body: { mode, language },
         initialMessages: [
@@ -65,14 +65,43 @@ export default function TutorEngine() {
         }
     };
 
-    const simulateSpeechRecognition = () => {
-        setIsRecording(!isRecording);
-        if (!isRecording) {
-            setTimeout(() => {
-                // In a real app we would set the input via voice-to-text here
-                setIsRecording(false);
-            }, 2000);
+    const startSpeechRecognition = () => {
+        if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+            alert(language === "en" ? "Voice recognition is not supported in this browser." : "El reconocimiento de voz no está soportado en este navegador.");
+            return;
         }
+
+        const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+        const recognition = new SpeechRecognition();
+
+        recognition.lang = language === "en" ? 'en-US' : 'es-ES';
+        recognition.interimResults = true;
+        recognition.continuous = false;
+
+        recognition.onstart = () => {
+            setIsRecording(true);
+        };
+
+        recognition.onresult = (event: any) => {
+            const transcript = Array.from(event.results)
+                .map((result: any) => result[0])
+                .map((result: any) => result.transcript)
+                .join('');
+
+            // Reemplaza el input actual temporalmente mientras hables
+            setInput(transcript);
+        };
+
+        recognition.onerror = (event: any) => {
+            console.error('Speech recognition error', event.error);
+            setIsRecording(false);
+        };
+
+        recognition.onend = () => {
+            setIsRecording(false);
+        };
+
+        recognition.start();
     };
 
     return (
@@ -201,7 +230,7 @@ export default function TutorEngine() {
 
                     <button
                         type="button"
-                        onClick={simulateSpeechRecognition}
+                        onClick={startSpeechRecognition}
                         className={`p-3 rounded-xl transition-all ${isRecording ? "text-red-500 bg-red-100 animate-pulse" : "text-slate-500 hover:text-blue-600 hover:bg-white"}`}
                         title="Dictar pregunta"
                     >
