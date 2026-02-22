@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Camera, Send, Mic, Image as ImageIcon, X, Loader2, Bot, User } from "lucide-react";
+import { Camera, Send, Mic, Image as ImageIcon, X, Loader2, Bot, User, Volume2, Square } from "lucide-react";
 import { useChat } from "ai/react";
 import { useLanguage } from "@/components/i18n-provider";
 
@@ -11,6 +11,7 @@ export default function TutorEngine() {
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const scrollRef = useRef<HTMLDivElement>(null);
+    const [speakingId, setSpeakingId] = useState<string | null>(null);
 
     const { t, language } = useLanguage();
 
@@ -104,6 +105,39 @@ export default function TutorEngine() {
         recognition.start();
     };
 
+    const speakMessage = (id: string, text: string) => {
+        if (!('speechSynthesis' in window)) {
+            alert(language === "en" ? "Text to speech is not supported in this browser." : "Texto a voz no está soportado en este navegador.");
+            return;
+        }
+
+        // Cancel any ongoing speech
+        window.speechSynthesis.cancel();
+
+        // If clicking the currently speaking message, just stop
+        if (speakingId === id) {
+            setSpeakingId(null);
+            return;
+        }
+
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = language === "en" ? 'en-US' : 'es-ES';
+        // Ajustes para voz de tutor más natural (varía por SO/Navegador)
+        utterance.rate = 1.05;
+        utterance.pitch = 1.0;
+
+        utterance.onend = () => {
+            setSpeakingId(null);
+        };
+
+        utterance.onerror = () => {
+            setSpeakingId(null);
+        };
+
+        setSpeakingId(id);
+        window.speechSynthesis.speak(utterance);
+    };
+
     return (
         <div className="max-w-5xl mx-auto h-[calc(100vh-8rem)] md:h-[calc(100vh-6rem)] flex flex-col animate-in fade-in zoom-in-95 duration-500 bg-white md:rounded-3xl border border-slate-200 overflow-hidden shadow-sm -mx-4 md:mx-auto mt-[-1rem] md:mt-0">
 
@@ -154,14 +188,24 @@ export default function TutorEngine() {
                         </div>
 
                         {/* Burbuja */}
-                        <div className={`max-w-[80%] rounded-2xl p-4 shadow-sm ${msg.role === "assistant"
+                        <div className={`max-w-[80%] rounded-2xl p-4 shadow-sm relative group ${msg.role === "assistant"
                             ? "bg-white border text-slate-800 rounded-tl-none border-slate-200 prose prose-slate prose-sm"
                             : "bg-blue-600 text-white rounded-tr-none"
                             }`}>
                             {msg.content}
-                            <div className={`text-[10px] font-medium mt-3 uppercase tracking-wider ${msg.role === "assistant" ? "text-slate-400" : "text-blue-300"
+                            <div className={`text-[10px] font-medium mt-3 uppercase tracking-wider flex items-center justify-between ${msg.role === "assistant" ? "text-slate-400" : "text-blue-300"
                                 }`}>
-                                {msg.role === "assistant" ? "Tutor" : "Mariana"}
+                                <span>{msg.role === "assistant" ? "Tutor" : "Mariana"}</span>
+
+                                {msg.role === "assistant" && (
+                                    <button
+                                        onClick={() => speakMessage(msg.id, msg.content)}
+                                        className="text-slate-400 hover:text-blue-600 transition-colors bg-slate-100 p-1.5 rounded-md opacity-0 group-hover:opacity-100 focus:opacity-100"
+                                        title={speakingId === msg.id ? "Detener audio" : "Leer en voz alta"}
+                                    >
+                                        {speakingId === msg.id ? <Square size={14} className="fill-current" /> : <Volume2 size={14} />}
+                                    </button>
+                                )}
                             </div>
                         </div>
                     </div>
