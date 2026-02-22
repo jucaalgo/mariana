@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Send, Mic, Image as ImageIcon, X, Loader2, Bot, User } from "lucide-react";
-import { useChat } from "@ai-sdk/react";
+import { useChat } from "ai/react";
 
 export default function TutorEngine() {
     const [mode, setMode] = useState<"concreto" | "tecnico">("concreto");
