@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { CheckCircle2, XCircle, ArrowRight, RotateCcw, HelpCircle } from "lucide-react";
+import { useLanguage } from "@/components/i18n-provider";
 
 interface Question {
     id: number;
@@ -16,6 +17,7 @@ interface QuizProps {
 }
 
 export function Quiz({ questions }: QuizProps) {
+    const { t } = useLanguage();
     const [currentStep, setCurrentStep] = useState(0);
     const [selectedOption, setSelectedOption] = useState<number | null>(null);
     const [showResult, setShowResult] = useState(false);
@@ -58,12 +60,12 @@ export function Quiz({ questions }: QuizProps) {
                 <div className="w-24 h-24 bg-indigo-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-indigo-500/20">
                     <CheckCircle2 size={48} />
                 </div>
-                <h3 className="text-3xl font-black mb-2">¡Módulo Completado!</h3>
-                <p className="text-indigo-200 text-lg mb-8 font-medium">Mariana, has demostrado un gran dominio de este tema.</p>
+                <h3 className="text-3xl font-black mb-2">{t("module.quizCompleted")}</h3>
+                <p className="text-indigo-200 text-lg mb-8 font-medium">{t("module.quizPassed")}</p>
 
                 <div className="bg-white/10 rounded-2xl p-6 mb-10 border border-white/10">
                     <div className="text-5xl font-black mb-1">{percentage}%</div>
-                    <p className="text-xs font-bold uppercase tracking-[0.2em] opacity-60">Puntuación Final</p>
+                    <p className="text-xs font-bold uppercase tracking-[0.2em] opacity-60">{t("module.finalScore")}</p>
                 </div>
 
                 <div className="flex flex-col md:flex-row gap-4 justify-center">
@@ -71,10 +73,10 @@ export function Quiz({ questions }: QuizProps) {
                         onClick={resetQuiz}
                         className="px-8 py-4 rounded-2xl bg-white/10 hover:bg-white/20 transition-all font-bold flex items-center justify-center gap-2"
                     >
-                        <RotateCcw size={20} /> Reintentar
+                        <RotateCcw size={20} /> {t("module.retry")}
                     </button>
                     <button className="px-8 py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-500 transition-all font-bold flex items-center justify-center gap-2 shadow-xl shadow-indigo-900/40">
-                        Siguiente Módulo <ArrowRight size={20} />
+                        {t("module.nextModule")} <ArrowRight size={20} />
                     </button>
                 </div>
             </div>
@@ -89,12 +91,12 @@ export function Quiz({ questions }: QuizProps) {
                         <HelpCircle size={24} />
                     </div>
                     <div>
-                        <h3 className="font-bold text-xl text-slate-800 tracking-tight">Comprueba lo aprendido</h3>
-                        <p className="text-slate-500 text-xs font-bold uppercase tracking-widest mt-0.5">Pregunta {currentStep + 1} de {questions.length}</p>
+                        <h3 className="font-bold text-xl text-slate-800 tracking-tight">{t("module.knowledgeCheck")}</h3>
+                        <p className="text-slate-500 text-xs font-bold uppercase tracking-widest mt-0.5">{t("module.question")} {currentStep + 1} {t("module.of")} {questions.length}</p>
                     </div>
                 </div>
                 <div className="text-indigo-600 font-black text-xl">
-                    Puntos: {score}
+                    {t("module.points")}: {score}
                 </div>
             </div>
 
@@ -138,7 +140,7 @@ export function Quiz({ questions }: QuizProps) {
                 {showResult && (
                     <div className="mt-8 animate-in slide-in-from-top-4 duration-500">
                         <div className={`p-6 rounded-2xl ${selectedOption === currentQuestion.correctAnswer ? 'bg-emerald-50 text-emerald-900 border border-emerald-100' : 'bg-rose-50 text-rose-900 border border-rose-100'}`}>
-                            <p className="font-bold mb-1">{selectedOption === currentQuestion.correctAnswer ? '¡Excelente Mariana!' : 'Casi lo logras...'}</p>
+                            <p className="font-bold mb-1">{selectedOption === currentQuestion.correctAnswer ? t("module.correct") : t("module.incorrect")}</p>
                             <p className="text-sm opacity-90">{currentQuestion.explanation}</p>
                         </div>
 
@@ -146,7 +148,7 @@ export function Quiz({ questions }: QuizProps) {
                             onClick={handleNext}
                             className="mt-8 w-full py-4 bg-slate-900 hover:bg-indigo-600 text-white rounded-2xl font-bold transition-all flex items-center justify-center gap-2 group"
                         >
-                            {currentStep + 1 === questions.length ? 'Finalizar Repaso' : 'Siguiente Pregunta'}
+                            {currentStep + 1 === questions.length ? t("module.finishReview") : t("module.nextQuestion")}
                             <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
                         </button>
                     </div>
