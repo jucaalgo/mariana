@@ -12,11 +12,11 @@ export default function TutorEngine() {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const scrollRef = useRef<HTMLDivElement>(null);
 
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
 
     const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
         api: "/api/chat",
-        body: { mode },
+        body: { mode, language },
         initialMessages: [
             {
                 id: "init",

@@ -6,7 +6,7 @@ import { mockModules, moduleTitles } from "@/lib/data";
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
-    const { messages, mode } = await req.json();
+    const { messages, mode, language } = await req.json();
 
     // Context preparation: Extracting knowledge from modules
     const courseContext = Object.values(mockModules).map(m => {
@@ -25,7 +25,7 @@ INSTRUCCIONES DE ESTILO (Modo: ${mode}):
 - Si el modo es "tecnico": Provee detalles legales precisos, definiciones exactas según el manual y referencias a las leyes de Florida si aplica.
 
 REGLAS DE ORO:
-1. Habla siempre en español.
+${language === "en" ? "1. Eres un tutor BILINGÜE. Como el usuario eligió INGLÉS, DEBES responder 100% en Inglés." : "1. Habla siempre en español."}
 2. Sé motivador y cercano con Mariana.
 3. Si la pregunta no tiene nada que ver con seguros de Florida, redirige amablemente la conversación al estudio del manual.
 4. Usa formato Markdown para que las respuestas sean fáciles de leer (negritas, listas, etc.).
@@ -38,7 +38,7 @@ REGLAS DE ORO:
             system: systemPrompt,
         });
 
-        return result.toTextStreamResponse();
+        return result.toDataStreamResponse();
     } catch (error: any) {
         console.error("AI Tutor Error:", error);
         return new Response(JSON.stringify({ error: error.message || "An error occurred during AI generation." }), {

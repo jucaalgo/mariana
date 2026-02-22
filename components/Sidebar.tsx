@@ -30,7 +30,7 @@ export function Sidebar() {
                 </div>
 
                 <nav className="flex-1 px-4 space-y-1.5">
-                    <p className="px-4 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-4">Menú Principal</p>
+                    <p className="px-4 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-4">{t("nav.mainMenu")}</p>
                     {navItems.map((item) => {
                         const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
                         return (
@@ -76,7 +76,7 @@ export function Sidebar() {
                         </div>
                         <div className="flex flex-col min-w-0">
                             <span className="text-sm font-bold text-white truncate">Mariana Lopez</span>
-                            <span className="text-[10px] text-indigo-400 font-black uppercase tracking-widest">Estudiante</span>
+                            <span className="text-[10px] text-indigo-400 font-black uppercase tracking-widest">{t("nav.student")}</span>
                         </div>
                     </div>
                 </div>
@@ -94,9 +94,9 @@ export function Sidebar() {
                         >
                             {/* Cloned icon with responsive size */}
                             <div className={`${isActive ? "scale-110" : ""} transition-transform`}>
-                                {item.name === "Inicio" ? <LayoutDashboard size={20} /> :
-                                    item.name === "Módulos" ? <BookOpen size={20} /> :
-                                        item.name === "Simulador" ? <Target size={20} /> : <MessageSquare size={20} />}
+                                {item.name === t("nav.dashboard") ? <LayoutDashboard size={20} /> :
+                                    item.name === t("nav.modules") ? <BookOpen size={20} /> :
+                                        item.name === t("nav.simulator") ? <Target size={20} /> : <MessageSquare size={20} />}
                             </div>
                             <span className="text-[10px] font-medium">{item.name}</span>
                         </Link>
