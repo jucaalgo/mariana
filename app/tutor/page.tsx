@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Send, Mic, Image as ImageIcon, X, Loader2, Bot, User } from "lucide-react";
+import { Camera, Send, Mic, Image as ImageIcon, X, Loader2, Bot, User } from "lucide-react";
 import { useChat } from "ai/react";
+import { useLanguage } from "@/components/i18n-provider";
 
 export default function TutorEngine() {
     const [mode, setMode] = useState<"concreto" | "tecnico">("concreto");
@@ -11,6 +12,8 @@ export default function TutorEngine() {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const scrollRef = useRef<HTMLDivElement>(null);
 
+    const { t } = useLanguage();
+
     const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
         api: "/api/chat",
         body: { mode },
@@ -18,7 +21,7 @@ export default function TutorEngine() {
             {
                 id: "init",
                 role: "assistant",
-                content: "¡Hola, Mariana! Soy tu tutor especializado en el Manual de Seguros 2-14 de Florida. Estoy aquí para ayudarte a entender cada concepto de forma sencilla o técnica. ¿En qué puedo apoyarte hoy?",
+                content: t("tutor.subtitle"),
             }
         ]
     });
@@ -29,6 +32,30 @@ export default function TutorEngine() {
             scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
         }
     }, [messages]);
+
+    const handleCameraCapture = async () => {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+
+            // Create a temporary video element to capture the frame
+            const video = document.createElement('video');
+            video.srcObject = stream;
+            await video.play();
+
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d')?.drawImage(video, 0, 0);
+
+            const imageUrl = canvas.toDataURL('image/jpeg');
+            setSelectedImage(imageUrl);
+
+            stream.getTracks().forEach(track => track.stop());
+        } catch (err) {
+            console.error("Error accessing camera:", err);
+            alert("No se pudo acceder a la cámara. Por favor verifica los permisos.");
+        }
+    };
 
     const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -58,10 +85,10 @@ export default function TutorEngine() {
                         <Bot size={20} className="md:w-6 md:h-6" />
                     </div>
                     <div>
-                        <h2 className="font-bold text-slate-800 text-base md:text-lg leading-tight md:leading-normal">Tutor Inteligente 2-14</h2>
+                        <h2 className="font-bold text-slate-800 text-base md:text-lg leading-tight md:leading-normal">{t("tutor.title")}</h2>
                         <div className="flex items-center gap-2">
                             <span className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-green-500 animate-pulse"></span>
-                            <span className="text-[10px] md:text-xs font-semibold text-slate-500 uppercase tracking-wide md:normal-case md:tracking-normal">IA Red Neuronal Activa</span>
+                            <span className="text-[10px] md:text-xs font-semibold text-slate-500 uppercase tracking-wide md:normal-case md:tracking-normal">{t("nav.tutor")}</span>
                         </div>
                     </div>
                 </div>
@@ -73,14 +100,14 @@ export default function TutorEngine() {
                         className={`flex-1 md:flex-none px-3 md:px-4 py-1.5 md:py-2 rounded-md text-xs md:text-sm font-bold transition-all ${mode === "concreto" ? "bg-white text-blue-600 shadow-sm" : "text-slate-500 hover:text-slate-700"
                             }`}
                     >
-                        Concreto
+                        {t("tutor.mode.concrete")}
                     </button>
                     <button
                         onClick={() => setMode("tecnico")}
                         className={`flex-1 md:flex-none px-3 md:px-4 py-1.5 md:py-2 rounded-md text-xs md:text-sm font-bold transition-all ${mode === "tecnico" ? "bg-white text-blue-600 shadow-sm" : "text-slate-500 hover:text-slate-700"
                             }`}
                     >
-                        Técnico
+                        {t("tutor.mode.technical")}
                     </button>
                 </div>
             </header>
@@ -131,7 +158,7 @@ export default function TutorEngine() {
                         <img src={selectedImage} alt="Preview" className="w-full h-full object-cover" />
                         <button
                             onClick={() => setSelectedImage(null)}
-                            className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                            className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity"
                         >
                             <X size={16} />
                         </button>
@@ -156,9 +183,18 @@ export default function TutorEngine() {
 
                     <button
                         type="button"
+                        onClick={handleCameraCapture}
+                        className="p-3 text-slate-500 hover:text-blue-600 hover:bg-white rounded-xl transition-all"
+                        title="Tomar foto de material de estudio"
+                    >
+                        <Camera size={22} />
+                    </button>
+
+                    <button
+                        type="button"
                         onClick={() => fileInputRef.current?.click()}
                         className="p-3 text-slate-500 hover:text-blue-600 hover:bg-white rounded-xl transition-all"
-                        title="Análisis visual próximamente"
+                        title="Subir foto de galería"
                     >
                         <ImageIcon size={22} />
                     </button>
@@ -174,7 +210,7 @@ export default function TutorEngine() {
 
                     <textarea
                         className="flex-1 bg-transparent border-none focus:ring-0 resize-none max-h-32 min-h-[48px] p-3 text-slate-800 placeholder-slate-400 placeholder:font-medium"
-                        placeholder="Pregúntale al tutor sobre el manual..."
+                        placeholder={t("tutor.placeholder")}
                         value={input}
                         onChange={handleInputChange}
                         onKeyDown={(e) => {

@@ -2,16 +2,18 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, Target, MessageSquare, LayoutDashboard, ShieldCheck } from "lucide-react";
+import { BookOpen, Target, MessageSquare, LayoutDashboard, ShieldCheck, Languages } from "lucide-react";
+import { useLanguage } from "./i18n-provider";
 
 export function Sidebar() {
     const pathname = usePathname();
+    const { t, language, setLanguage } = useLanguage();
 
     const navItems = [
-        { name: "Inicio", href: "/", icon: <LayoutDashboard size={20} /> },
-        { name: "Módulos", href: "/modules/1", icon: <BookOpen size={20} /> },
-        { name: "Simulador", href: "/simulator", icon: <Target size={20} /> },
-        { name: "Tutor IA", href: "/tutor", icon: <MessageSquare size={20} /> },
+        { name: t("nav.dashboard"), href: "/", icon: <LayoutDashboard size={20} /> },
+        { name: t("nav.modules"), href: "/modules/1", icon: <BookOpen size={20} /> },
+        { name: t("nav.simulator"), href: "/simulator", icon: <Target size={20} /> },
+        { name: t("nav.tutor"), href: "/tutor", icon: <MessageSquare size={20} /> },
     ];
 
     return (
@@ -48,6 +50,21 @@ export function Sidebar() {
                         );
                     })}
                 </nav>
+
+                <div className="px-6 pb-2">
+                    <button
+                        onClick={() => setLanguage(language === "en" ? "es" : "en")}
+                        className="w-full flex items-center justify-between p-3 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-indigo-50 hover:border-indigo-200 transition-colors text-slate-600 hover:text-indigo-700"
+                    >
+                        <div className="flex items-center gap-2 font-bold text-sm">
+                            <Languages size={18} />
+                            {language === "en" ? "English" : "Español"}
+                        </div>
+                        <span className="text-[10px] uppercase font-black tracking-widest bg-white shadow-sm border px-2 py-1 rounded-lg">
+                            {language === "en" ? "EN" : "ES"}
+                        </span>
+                    </button>
+                </div>
 
                 <div className="p-6">
                     <div className="bg-slate-900 rounded-3xl p-5 flex items-center gap-4 shadow-2xl relative overflow-hidden group">

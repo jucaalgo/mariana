@@ -74,7 +74,7 @@ export const mockModules: Record<string, ModuleData> = {
                     </div>
                 </div>
 
-                <div class="bg-indigo-900 text-white p-8 rounded-[2rem] shadow-xl my-12 relative overflow-hidden">
+                <div class="bg-indigo-900 text-white p-8 rounded-[2rem] shadow-xl my-12 relative overflow-hidden not-prose">
                     <div class="absolute right-0 top-0 opacity-10">
                         <svg width="200" height="200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
                     </div>
@@ -161,7 +161,7 @@ export const mockModules: Record<string, ModuleData> = {
                     </div>
                 </div>
 
-                <div class="bg-indigo-900 p-10 rounded-[3rem] text-white shadow-2xl my-16 relative overflow-hidden">
+                <div class="bg-indigo-900 p-10 rounded-[3rem] text-white shadow-2xl my-16 relative overflow-hidden not-prose">
                     <div class="relative z-10 text-center">
                         <h4 class="text-2xl font-black mb-4">Reincorporación (Reinstatement)</h4>
                         <p class="text-indigo-200 text-lg max-w-2xl mx-auto mb-8 font-medium italic">"Mariana, si tu póliza caducó hace tiempo, puedes 'revivirla' en lugar de comprar una nueva."</p>
@@ -250,7 +250,7 @@ export const mockModules: Record<string, ModuleData> = {
                     </div>
                 </div>
 
-                <div class="bg-slate-900 p-10 rounded-[3rem] text-white shadow-2xl my-16 relative overflow-hidden">
+                <div class="bg-slate-900 p-10 rounded-[3rem] text-white shadow-2xl my-16 relative overflow-hidden not-prose">
                     <h3 class="text-2xl font-black mb-6">Tipos de Anualidades para el Examen</h3>
                     <ul class="space-y-6">
                         <li class="flex items-start gap-4">
@@ -484,7 +484,7 @@ export const mockModules: Record<string, ModuleData> = {
                     </div>
                 </div>
 
-                <div class="bg-slate-900 p-10 rounded-[3rem] text-white shadow-2xl my-16">
+                <div class="bg-slate-900 p-10 rounded-[3rem] text-white shadow-2xl my-16 not-prose">
                     <p class="text-2xl font-black mb-4">Capitación (Capitation)</p>
                     <p class="text-slate-400 leading-relaxed font-medium">Es como los HMO pagan a los médicos: una cantidad fija por cada miembro asignado, sin importar cuántas veces vea al doctor. Al doctor se le paga "por cabeza".</p>
                 </div>
@@ -528,7 +528,7 @@ export const mockModules: Record<string, ModuleData> = {
                     </div>
                 </div>
 
-                <div class="bg-indigo-900 p-10 rounded-[3rem] text-white shadow-2xl relative overflow-hidden">
+                <div class="bg-indigo-900 p-10 rounded-[3rem] text-white shadow-2xl relative overflow-hidden not-prose">
                     <h3 class="text-2xl font-black mb-6">Tiempos Matemáticos</h3>
                     <div class="space-y-6">
                         <div class="bg-white/10 p-6 rounded-2xl">
@@ -620,7 +620,7 @@ export const mockModules: Record<string, ModuleData> = {
                 <h2 class="text-3xl font-black text-slate-900 mb-8 tracking-tighter">Más allá de la medicina</h2>
                 <p class="text-lg text-slate-600 mb-8">Mariana, el LTC no es para curarte, es para **ayudarte a vivir** cuando pierdes independencia. El examen se enfoca en las 6 ADLs:</p>
 
-                <div class="bg-slate-900 p-10 rounded-[3rem] text-white shadow-2xl mb-12">
+                <div class="bg-slate-900 p-10 rounded-[3rem] text-white shadow-2xl mb-12 not-prose">
                     <p class="text-indigo-400 font-black uppercase text-xs tracking-widest mb-6 text-center">Las 6 ADLs Clave</p>
                     <div class="grid grid-cols-2 md:grid-cols-3 gap-6 text-center">
                         <div class="p-4 border border-white/10 rounded-2xl bg-white/5">Bañarse</div>

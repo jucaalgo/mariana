@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { CheckCircle2, XCircle, ArrowRight, RotateCcw } from "lucide-react";
 import { QuizQuestion } from "@/types";
+import { useLanguage } from "@/components/i18n-provider";
 
 const mockQuestions: QuizQuestion[] = [
     {
@@ -48,6 +49,7 @@ const mockQuestions: QuizQuestion[] = [
 ];
 
 export default function Simulator() {
+    const { t } = useLanguage();
     const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
     const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
 
@@ -72,14 +74,14 @@ export default function Simulator() {
                 <div className="w-24 h-24 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
                     <CheckCircle2 size={48} />
                 </div>
-                <h1 className="text-4xl font-bold text-slate-900 mb-4">¡Prueba Finalizada!</h1>
-                <p className="text-slate-500 text-lg mb-8">Has completado esta ronda del simulador del estado de Florida.</p>
+                <h1 className="text-4xl font-bold text-slate-900 mb-4">{t("simulator.pass")}</h1>
+                <p className="text-slate-500 text-lg mb-8">{t("simulator.requirements")}</p>
                 <button
                     onClick={handleRestart}
                     className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl font-bold transition-all flex items-center gap-2 mx-auto"
                 >
                     <RotateCcw size={20} />
-                    Reiniciar Simulador
+                    {t("simulator.retake")}
                 </button>
             </div>
         );
@@ -88,9 +90,9 @@ export default function Simulator() {
     return (
         <div className="max-w-4xl mx-auto space-y-6 md:space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 relative">
             <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-6 md:mb-8 border-b border-slate-200 pb-4">
-                <h1 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">Simulador del Examen 2-14</h1>
+                <h1 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">{t("simulator.title")}</h1>
                 <div className="text-xs md:text-sm font-bold text-slate-400 uppercase tracking-widest bg-slate-100 px-3 md:px-4 py-1.5 md:py-2 rounded-lg self-end md:self-auto">
-                    Pregunta {currentQuestionIdx + 1} de {mockQuestions.length}
+                    {t("simulator.question")} {currentQuestionIdx + 1} / {mockQuestions.length}
                 </div>
             </header>
 
@@ -165,7 +167,7 @@ export default function Simulator() {
                                 : "bg-red-600 hover:bg-red-700 text-white shadow-md shadow-red-200"
                                 }`}
                         >
-                            Siguiente Pregunta <ArrowRight size={20} />
+                            {t("module.nextQuestion")} <ArrowRight size={20} />
                         </button>
                     </div>
                 </div>
