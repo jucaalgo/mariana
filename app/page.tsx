@@ -1,12 +1,21 @@
+"use client";
+
 import Link from "next/link";
 import { BookOpen, Target, Award, PlayCircle, ArrowRight, Sparkles, BookMarked, BrainCircuit, Rocket, Clock } from "lucide-react";
 import { mockModules } from "@/lib/data";
+import { mockModules as mockModulesEn } from "@/lib/data-en";
+import { useLanguage } from "@/components/i18n-provider";
+import { ModuleData } from "@/types";
 
 export default function Dashboard() {
+  const { language, t } = useLanguage();
   const progress = 0;
 
+  // Decide which modules to show based on language
+  const activeModules = language === "en" ? mockModulesEn : mockModules;
+
   // Convert modules to a list and sort by ID
-  const allModules = Object.values(mockModules).sort((a, b) => Number(a.id) - Number(b.id));
+  const allModules = (Object.values(activeModules) as ModuleData[]).sort((a, b) => Number(a.id) - Number(b.id));
 
   const coursePlan = allModules.map((m, idx) => ({
     id: m.id,
@@ -14,6 +23,14 @@ export default function Dashboard() {
     status: idx === 0 ? "next" : "locked",
     time: idx < 3 ? (idx === 0 ? "45 min" : idx === 1 ? "1h 20m" : "2h") : "1h 30m"
   }));
+
+  // Localized title parsing (handling module prefixes correctly)
+  const getModuleDisplayTitle = (title: string, index: number) => {
+    // If it already has "Module" or "Módulo", try to just use the title, 
+    // but the request is to make the title fully translated.
+    // The activeModules already have translated titles ("Module 1:..." vs "Módulo 1:...")
+    return title;
+  };
 
   return (
     <div className="max-w-6xl mx-auto space-y-8 md:space-y-10 animate-in fade-in duration-700">
@@ -27,17 +44,21 @@ export default function Dashboard() {
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-2xl md:text-4xl font-black text-slate-900 tracking-tight">¡Hola, Mariana Lopez!</h1>
+              <h1 className="text-2xl md:text-4xl font-black text-slate-900 tracking-tight">
+                {language === "en" ? "Hello, Mariana Lopez!" : "¡Hola, Mariana Lopez!"}
+              </h1>
               <Sparkles className="text-amber-400" size={24} />
             </div>
-            <p className="text-slate-500 mt-1 text-base md:text-lg">Tu viaje hacia la Licencia 2-14 comienza hoy. Paso a paso.</p>
+            <p className="text-slate-500 mt-1 text-base md:text-lg">
+              {language === "en" ? "Your journey to the 2-14 License begins today. Step by step." : "Tu viaje hacia la Licencia 2-14 comienza hoy. Paso a paso."}
+            </p>
           </div>
         </div>
         <div className="bg-slate-900 px-6 py-3 rounded-2xl flex items-center gap-3 shadow-xl">
           <Rocket className="text-emerald-400" size={24} />
           <div>
-            <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest">Meta Principal</p>
-            <p className="text-lg font-bold text-white">Aprobar a la Primera</p>
+            <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest">{t("dashboard.mainGoalLabel")}</p>
+            <p className="text-lg font-bold text-white">{t("dashboard.mainGoal")}</p>
           </div>
         </div>
       </header>
@@ -59,23 +80,23 @@ export default function Dashboard() {
           </svg>
           <div className="absolute flex flex-col items-center justify-center text-white drop-shadow-md">
             <span className="text-4xl md:text-6xl font-black tracking-tighter">{progress}%</span>
-            <span className="text-xs font-semibold uppercase tracking-widest opacity-80 mt-1">Completado</span>
+            <span className="text-xs font-semibold uppercase tracking-widest opacity-80 mt-1">{t("dashboard.completed")}</span>
           </div>
         </div>
 
         <div className="flex-1 relative z-10 w-full text-center md:text-left space-y-4">
           <div className="inline-flex items-center gap-2 bg-white/20 px-3 py-1.5 rounded-full backdrop-blur-sm border border-white/10 mb-2">
             <Target size={16} className="text-amber-300" />
-            <span className="text-sm font-semibold tracking-wide text-white">INICIO DEL CURSO</span>
+            <span className="text-sm font-semibold tracking-wide text-white">{t("dashboard.courseStart")}</span>
           </div>
-          <h2 className="text-3xl md:text-4xl font-black tracking-tight drop-shadow-sm">El momento es ahora</h2>
+          <h2 className="text-3xl md:text-4xl font-black tracking-tight drop-shadow-sm">{t("dashboard.timeIsNow")}</h2>
           <p className="text-blue-100 text-lg md:text-xl max-w-xl leading-relaxed mx-auto md:mx-0 font-medium">
-            No necesitas saber nada previo. Hemos diseñado este curso para ti, Mariana. Iremos paso a paso, desde los conceptos más simples hasta que domines el manual completo.
+            {t("dashboard.noExpNeeded")}
           </p>
 
           <div className="pt-4 flex justify-center md:justify-start gap-4">
             <Link href="/modules/1" className="bg-white hover:bg-slate-50 text-blue-700 px-8 py-4 rounded-2xl text-lg font-bold transition-all flex items-center gap-3 shadow-xl hover:shadow-2xl hover:-translate-y-1 group">
-              Empezar Módulo 1
+              {t("dashboard.startModule1")}
               <ArrowRight size={22} className="group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
@@ -91,8 +112,8 @@ export default function Dashboard() {
               <BookMarked size={24} />
             </div>
             <div>
-              <h3 className="text-2xl font-bold text-slate-800 tracking-tight">Ruta de Aprendizaje</h3>
-              <p className="text-slate-500 font-medium">Sigue el orden diseñado para garantizar tu éxito.</p>
+              <h3 className="text-2xl font-bold text-slate-800 tracking-tight">{t("dashboard.learningPath")}</h3>
+              <p className="text-slate-500 font-medium">{t("dashboard.followOrder")}</p>
             </div>
           </div>
 
@@ -107,9 +128,11 @@ export default function Dashboard() {
                 </div>
 
                 <div className="flex-1">
-                  <h4 className={`text-lg font-bold ${modulo.status === 'next' ? 'text-indigo-900' : 'text-slate-600'}`}>{modulo.title}</h4>
+                  <h4 className={`text-lg font-bold ${modulo.status === 'next' ? 'text-indigo-900' : 'text-slate-600'}`}>
+                    {getModuleDisplayTitle(modulo.title, index)}
+                  </h4>
                   <p className="text-sm font-medium text-slate-500 mt-1 flex items-center gap-2">
-                    <Clock size={14} /> {modulo.time} estimado
+                    <Clock size={14} /> {modulo.time} {t("dashboard.estimated")}
                   </p>
                 </div>
 
@@ -130,25 +153,25 @@ export default function Dashboard() {
         </div>
 
         {/* Herramientas Interactivos Sidebar */}
-        < div className="space-y-6" >
+        <div className="space-y-6">
           <Link href="/simulator" className="block w-full bg-gradient-to-br from-slate-900 to-slate-800 rounded-[2rem] p-8 text-white shadow-xl hover:-translate-y-1 transition-transform group relative overflow-hidden">
             <div className="absolute top-0 right-0 p-4 opacity-10 transform group-hover:rotate-12 transition-transform duration-500">
               <BrainCircuit size={100} />
             </div>
             <BrainCircuit className="mb-4 text-emerald-400" size={32} />
-            <h3 className="text-2xl font-bold mb-2">Simulador de Examen</h3>
-            <p className="text-slate-300 font-medium mb-6">Bloqueado hasta completar el 50% del curso.</p>
+            <h3 className="text-2xl font-bold mb-2">{t("dashboard.examSimulator")}</h3>
+            <p className="text-slate-300 font-medium mb-6">{t("dashboard.lockedUntil")}</p>
             <div className="inline-flex items-center gap-2 font-bold text-sm bg-white/10 w-fit px-4 py-2 rounded-xl text-slate-400">
-              Requiere progreso
+              {t("dashboard.requiresProgress")}
             </div>
           </Link>
 
           <div className="bg-amber-50 rounded-[2rem] p-8 border border-amber-200">
-            <h3 className="text-xl font-bold text-amber-900 mb-2">Metodología Didáctica</h3>
-            <p className="text-amber-800/80 font-medium">Cada módulo contiene analogías visuales, tarjetas de memoria y retos para asegurar que absorbes la información sin aburrirte.</p>
+            <h3 className="text-xl font-bold text-amber-900 mb-2">{t("dashboard.teachingMethod")}</h3>
+            <p className="text-amber-800/80 font-medium">{t("dashboard.methodDesc")}</p>
           </div>
-        </div >
-      </div >
-    </div >
+        </div>
+      </div>
+    </div>
   );
 }
