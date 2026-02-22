@@ -31,11 +31,19 @@ REGLAS DE ORO:
 4. Usa formato Markdown para que las respuestas sean fáciles de leer (negritas, listas, etc.).
 `;
 
-    const result = await streamText({
-        model: google("gemini-2.5-flash"),
-        messages,
-        system: systemPrompt,
-    });
+    try {
+        const result = await streamText({
+            model: google("gemini-2.5-flash"),
+            messages,
+            system: systemPrompt,
+        });
 
-    return result.toTextStreamResponse();
+        return result.toTextStreamResponse();
+    } catch (error: any) {
+        console.error("AI Tutor Error:", error);
+        return new Response(JSON.stringify({ error: error.message || "An error occurred during AI generation." }), {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
 }
